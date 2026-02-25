@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BuddyAdmin</title>
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --text:#0f172a;
+      --orange:#ff7a00;
+      --stroke: rgba(15,23,42,.12);
+      --shadow: 0 18px 50px rgba(0,0,0,.25);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      background:
+        radial-gradient(1100px 700px at 15% 10%, rgba(255,122,0,.22), transparent 60%),
+        radial-gradient(900px 600px at 85% 20%, rgba(255,122,0,.16), transparent 60%),
+        var(--bg);
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      align-items:stretch;
+    }
+
+    .shell{
+      width: min(1100px, 94vw);
+      margin: 28px auto;
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      align-items:start;
+    }
+
+    .brand{
+      padding:18px 18px 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .logo{
+      display:flex; align-items:center; gap:10px;
+    }
+    .mark{
+      width:42px; height:42px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(255,122,0,1), rgba(255,122,0,.6));
+      box-shadow: 0 12px 30px rgba(255,122,0,.25);
+      position:relative;
+    }
+    .mark:after{
+      content:"";
+      position:absolute; inset:10px;
+      border-radius:10px;
+      border:2px solid rgba(0,0,0,.25);
+      background: rgba(255,255,255,.18);
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.92);
+    }
+
+    .panel{
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .sidebar .inner{ padding: 10px 12px 14px; }
+    .sidebar .card{
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      padding: 14px;
+      margin: 10px 0;
+    }
+
+    .label{ font-size:12px; color: rgba(255,255,255,.75); margin-bottom:6px; }
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color:#fff;
+      outline:none;
+      font-size:14px;
+    }
+    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.45); }
+    textarea{ min-height: 90px; resize: vertical; }
+
+    .btn{
+      border: none;
+      cursor:pointer;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0b0b0f;
+      background: var(--orange);
+      box-shadow: 0 14px 30px rgba(255,122,0,.22);
+      transition: transform .08s ease, filter .2s ease;
+      width:100%;
+    }
+    .btn:hover{ filter: brightness(1.03); }
+    .btn:active{ transform: translateY(1px); }
+
+    .btn.secondary{
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+
+    .content{
+      padding: 14px;
+    }
+
+    .content .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 14px 14px 6px;
+    }
+
+    .userline{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .userline .name{
+      font-size:16px; font-weight:800;
+    }
+    .userline .meta{
+      font-size:12px; color: rgba(255,255,255,.72);
+      font-family: var(--mono);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 10px 14px 14px;
+    }
+
+    .kpi{
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 92px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .kpi .t{ font-size:12px; color: rgba(255,255,255,.72); }
+    .kpi .v{ font-size:28px; font-weight:900; letter-spacing:.3px; }
+    .kpi .s{ font-size:12px; color: rgba(255,255,255,.75); }
+
+    .section{
+      padding: 0 14px 14px;
+    }
+    .section h2{
+      font-size:13px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      margin: 10px 0 10px;
+      color: rgba(255,255,255,.78);
+    }
+
+    .table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+    }
+    .table th, .table td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      font-size: 13px;
+      color: rgba(255,255,255,.92);
+      vertical-align: top;
+    }
+    .table th{
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing:.1em;
+      color: rgba(255,255,255,.70);
+      background: rgba(255,255,255,.06);
+    }
+    .table tr:last-child td{ border-bottom:none; }
+
+    .pill{
+      display:inline-block;
+      padding: 4px 10px;
+      border-radius:999px;
+      font-size: 12px;
+      font-family: var(--mono);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+    }
+    .pill.orange{ background: rgba(255,122,0,.18); border-color: rgba(255,122,0,.25); }
+    .pill.green{ background: rgba(34,197,94,.16); border-color: rgba(34,197,94,.25); }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .toast{
+      position: fixed;
+      right: 16px; bottom: 16px;
+      background: rgba(0,0,0,.75);
+      border: 1px solid rgba(255,255,255,.12);
+      color:#fff;
+      padding: 12px 14px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      max-width: min(420px, 92vw);
+      display:none;
+      z-index: 999;
+    }
+    .toast.show{ display:block; }
+
+    @media (max-width: 900px){
+      body{ align-items:flex-start; }
+      .shell{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <!-- SIDEBAR -->
+    <div class="panel sidebar">
+      <div class="brand">
+        <div class="logo">
+          <div class="mark"></div>
+          <div>
+            <h1>BuddyAdmin</h1>
+            <div style="font-size:12px;color:rgba(255,255,255,.68)">Orange • White • Black</div>
+          </div>
+        </div>
+        <div class="badge" id="envBadge">LIVE</div>
+      </div>
+
+      <div class="inner">
+        <div class="card" id="loginCard">
+          <div class="label">Unique Code</div>
+          <input id="codeInput" placeholder="e.g. A1001 / T2001 / L3001" autocomplete="off" />
+          <div style="height:10px"></div>
+          <button class="btn" id="loginBtn">Login</button>
+          <div style="height:10px"></div>
+          <button class="btn secondary" id="demoBtn">Use Demo Mode</button>
+          <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
+            Demo mode runs without Apps Script (UI only).
+          </div>
+        </div>
+
+        <div class="card" id="sessionCard" style="display:none">
+          <div class="label">Signed in as</div>
+          <div style="font-weight:900;font-size:15px" id="who"></div>
+          <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.75)" id="whoMeta"></div>
+          <div style="height:10px"></div>
+          <button class="btn secondary" id="logoutBtn">Logout</button>
+        </div>
+
+        <div class="card" id="actionsCard" style="display:none">
+          <div class="label">Quick Actions</div>
+          <div id="quickActions"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="panel content">
+      <div class="topbar">
+        <div class="userline">
+          <div class="name" id="pageTitle">Welcome</div>
+          <div class="meta" id="pageSubtitle">Login to manage lessons, purchases, and invoices.</div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select id="monthSelect" style="max-width:160px; display:none"></select>
+        </div>
+      </div>
+
+      <div class="grid" id="kpis" style="display:none"></div>
+
+      <div class="section" id="mainSection" style="display:none">
+        <h2 id="sectionTitle">Overview</h2>
+        <div id="sectionBody"></div>
+      </div>
+
+      <div style="padding:14px;color:rgba(255,255,255,.72);line-height:1.45" id="emptyState">
+        <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:6px">Buddy Learning Lesson Tracking</div>
+        <div>
+          This portal lets <span class="pill orange">Admins</span> assign lessons and record purchases,
+          <span class="pill orange">Learners</span> track lessons paid/done/left,
+          and <span class="pill orange">Tutors</span> mark lessons completed and generate monthly invoices.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  /********************
+   * CONFIG
+   ********************/
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE"; // <-- replace
+
+  /********************
+   * STATE
+   ********************/
+  let session = {
+    mode: "api", // "api" or "demo"
+    session_code: null,
+    user: null,
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 2600);
+  }
+
+  function yyyymm(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    return `${y}-${m}`;
+  }
+
+  function fillMonthSelect(){
+    const sel = $("monthSelect");
+    sel.innerHTML = "";
+    const now = new Date();
+    for(let i=0;i<14;i++){
+      const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+      const v = yyyymm(d);
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      sel.appendChild(opt);
+    }
+    sel.value = yyyymm(now);
+  }
+
+  async function api(action, payload={}){
+    if (session.mode === "demo") {
+      return demoApi(action, payload);
+    }
+    if (!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")) {
+      throw new Error("Set SCRIPT_URL in index.html");
+    }
+    const body = {
+      action,
+      ...payload
+    };
+    if (action !== "login") body.session_code = session.session_code;
+
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  /********************
+   * DEMO API (UI only)
+   ********************/
+  function demoApi(action, payload){
+    const mock = {
+      userAdmin: { code:"A1001", role:"admin", name:"Admin User", linked_code:"" },
+      userTutor: { code:"T2001", role:"tutor", name:"K. Tutor", linked_code:"T2001" },
+      userLearner:{ code:"L3001", role:"learner", name:"S. Learner", linked_code:"L3001" },
+    };
+
+    if (action === "login"){
+      const c = (payload.code||"").toUpperCase().trim();
+      let user = null;
+      if (c.startsWith("A")) user = mock.userAdmin;
+      if (c.startsWith("T")) user = mock.userTutor;
+      if (c.startsWith("L")) user = mock.userLearner;
+      return Promise.resolve({ ok:true, user, error: user?null:"Invalid code" });
+    }
+
+    if (action === "getLearnerDashboard"){
+      return Promise.resolve({
+        ok:true,
+        learner_code:"L3001",
+        totals:{ lessonsBought: 10, lessonsDone: 4, lessonsLeft: 6 },
+        recentLessons:[
+          {lesson_id:"L1", lesson_date:"2026-02-20", learner_code:"L3001", tutor_code:"T2001", status:"DONE", minutes:60, notes:"Algebra"},
+          {lesson_id:"L2", lesson_date:"2026-02-23", learner_code:"L3001", tutor_code:"T2001", status:"ASSIGNED", minutes:60, notes:"Trigonometry"},
+        ],
+        purchases:[
+          {purchase_id:"P1", learner_code:"L3001", purchase_date:"2026-02-01", lessons_bought:10, amount_paid:1700}
+        ]
+      });
+    }
+
+    if (action === "getTutorDashboard"){
+      const targetMonth = payload.month || "2026-02";
+      return Promise.resolve({
+        ok:true,
+        tutor_code:"T2001",
+        targetMonth,
+        totals:{ assignedCount: 3, doneCount: 8, leftCount: 3 },
+        invoice:{ ratePerLesson:175, lessonsDoneThisMonth: 6, earningsThisMonth: 1050 },
+        yearSummary:[
+          {month:"2026-01", lessonsDone:5, earnings:875},
+          {month:"2026-02", lessonsDone:6, earnings:1050},
+        ],
+        assignedLessons:[
+          {lesson_id:"L22", lesson_date:"2026-02-26", learner_code:"L3001", tutor_code:"T2001", status:"ASSIGNED", minutes:60, notes:"Geometry"},
+        ],
+        doneLessonsThisMonth:[
+          {lesson_id:"L12", lesson_date:"2026-02-05", learner_code:"L3001", tutor_code:"T2001", status:"DONE", minutes:60, notes:"Functions"},
+        ]
+      });
+    }
+
+    if (action === "adminSummary"){
+      return Promise.resolve({
+        ok:true,
+        totals:{ lessonsBought: 42, lessonsDone: 30, lessonsAssigned: 12 },
+        recentLessons:[],
+        recentPurchases:[]
+      });
+    }
+
+    if (action.startsWith("admin") || action.startsWith("tutor")){
+      return Promise.resolve({ ok:true, ...(payload||{}) });
+    }
+
+    return Promise.resolve({ ok:false, error:"Demo: unsupported action" });
+  }
+
+  /********************
+   * UI RENDER
+   ********************/
+  function setSessionUI(signedIn){
+    $("loginCard").style.display = signedIn ? "none" : "block";
+    $("sessionCard").style.display = signedIn ? "block" : "none";
+    $("actionsCard").style.display = signedIn ? "block" : "none";
+    $("kpis").style.display = signedIn ? "grid" : "none";
+    $("mainSection").style.display = signedIn ? "block" : "none";
+    $("emptyState").style.display = signedIn ? "none" : "block";
+    $("monthSelect").style.display = (signedIn && session.user?.role === "tutor") ? "block" : "none";
+  }
+
+  function setHeader(title, subtitle){
+    $("pageTitle").textContent = title;
+    $("pageSubtitle").textContent = subtitle;
+  }
+
+  function renderKPIs(items){
+    const wrap = $("kpis");
+    wrap.innerHTML = "";
+    items.forEach(k => {
+      const div = document.createElement("div");
+      div.className = "kpi";
+      div.innerHTML = `
+        <div class="t">${k.label}</div>
+        <div class="v">${k.value}</div>
+        <div class="s">${k.sub || ""}</div>
+      `;
+      wrap.appendChild(div);
+    });
+  }
+
+  function table(headers, rows){
+    const th = headers.map(h=>`<th>${h}</th>`).join("");
+    const tr = rows.map(r => `<tr>${r.map(c=>`<td>${c ?? ""}</td>`).join("")}</tr>`).join("");
+    return `<table class="table"><thead><tr>${th}</tr></thead><tbody>${tr || `<tr><td colspan="${headers.length}">No data</td></tr>`}</tbody></table>`;
+  }
+
+  function money(n){
+    const v = Number(n)||0;
+    return "R" + v.toLocaleString("en-ZA");
+  }
+
+  function suggestAmount(lessons){
+    const L = Number(lessons)||0;
+    if (L === 4) return 660;
+    if (L === 10) return 1700;
+    return L * 175;
+  }
+
+  function renderQuickActions(){
+    const q = $("quickActions");
+    const role = session.user.role;
+    if (role === "learner"){
+      q.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
+        Learners can view progress only.
+      </div>`;
+      return;
+    }
+    if (role === "tutor"){
+      q.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
+        Tutors can mark their assigned lessons as <span class="pill green">DONE</span>.
+      </div>`;
+      return;
+    }
+    // admin
+    q.innerHTML = `
+      <button class="btn secondary" id="refreshBtn">Refresh Summary</button>
+      <div style="height:8px"></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
+        Admin can record purchases, create lessons and assign tutors.
+      </div>
+    `;
+    setTimeout(()=>{
+      const b = $("refreshBtn");
+      if (b) b.onclick = () => loadRoleHome();
+    },0);
+  }
+
+  async function loadRoleHome(){
+    const u = session.user;
+    renderQuickActions();
+
+    if (u.role === "admin"){
+      setHeader(`Admin Dashboard`, `Record purchases, create lessons, assign tutors.`);
+      const sum = await api("adminSummary");
+      renderKPIs([
+        { label:"Lessons Bought (Total)", value: sum.totals.lessonsBought, sub:"All purchases" },
+        { label:"Lessons Done (Total)", value: sum.totals.lessonsDone, sub:"Completed lessons" },
+        { label:"Lessons Assigned", value: sum.totals.lessonsAssigned, sub:"Pending completion" },
+      ]);
+
+      $("sectionTitle").textContent = "Admin Tools";
+
+      $("sectionBody").innerHTML = `
+        <div class="row" style="margin-bottom:12px">
+          <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+            <h3 style="margin:0 0 10px;font-size:14px">Add Purchase</h3>
+            <div class="label">Learner Code</div>
+            <input id="pLearner" placeholder="e.g. L3001" />
+            <div class="row">
+              <div>
+                <div class="label">Lessons Bought</div>
+                <input id="pLessons" type="number" placeholder="e.g. 10" />
+              </div>
+              <div>
+                <div class="label">Amount Paid (auto-suggest)</div>
+                <input id="pAmount" type="number" placeholder="e.g. 1700" />
+              </div>
+            </div>
+            <div class="label" style="margin-top:8px">Purchase Date</div>
+            <input id="pDate" type="date" />
+            <div style="height:10px"></div>
+            <button class="btn" id="addPurchaseBtn">Save Purchase</button>
+            <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.70)">
+              Pricing guide: 1 lesson R175 • 4 lessons R660 • 10 lessons R1700
+            </div>
+          </div>
+
+          <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+            <h3 style="margin:0 0 10px;font-size:14px">Create Lesson</h3>
+            <div class="label">Learner Code</div>
+            <input id="lLearner" placeholder="e.g. L3001" />
+            <div class="row">
+              <div>
+                <div class="label">Lesson Date</div>
+                <input id="lDate" type="date" />
+              </div>
+              <div>
+                <div class="label">Minutes</div>
+                <input id="lMinutes" type="number" placeholder="60" />
+              </div>
+            </div>
+            <div class="label" style="margin-top:8px">Notes</div>
+            <textarea id="lNotes" placeholder="Topic / outcomes..."></textarea>
+            <button class="btn" id="createLessonBtn">Create Lesson</button>
+          </div>
+        </div>
+
+        <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+          <h3 style="margin:0 0 10px;font-size:14px">Assign Lesson to Tutor</h3>
+          <div class="row">
+            <div>
+              <div class="label">Lesson ID</div>
+              <input id="aLessonId" placeholder="e.g. L1700000000000" />
+            </div>
+            <div>
+              <div class="label">Tutor Code</div>
+              <input id="aTutor" placeholder="e.g. T2001" />
+            </div>
+          </div>
+          <div style="height:10px"></div>
+          <button class="btn" id="assignBtn">Assign</button>
+        </div>
+      `;
+
+      // wire admin buttons
+      setTimeout(()=>{
+        const pLessons = $("pLessons");
+        const pAmount = $("pAmount");
+        const pDate = $("pDate");
+        const lDate = $("lDate");
+
+        // defaults
+        const today = new Date();
+        pDate.valueAsDate = today;
+        lDate.valueAsDate = today;
+
+        pLessons.oninput = () => {
+          const s = suggestAmount(pLessons.value);
+          pAmount.value = s;
+        };
+
+        $("addPurchaseBtn").onclick = async () => {
+          const learner_code = $("pLearner").value.trim();
+          const lessons_bought = Number($("pLessons").value);
+          const amount_paid = Number($("pAmount").value);
+          const purchase_date = $("pDate").value;
+
+          if (!learner_code || !lessons_bought) return toast("Enter learner code + lessons bought.");
+          const r = await api("adminAddPurchase", { learner_code, lessons_bought, amount_paid, purchase_date });
+          toast(`Purchase saved (${r.purchase_id}).`);
+          loadRoleHome();
+        };
+
+        $("createLessonBtn").onclick = async () => {
+          const learner_code = $("lLearner").value.trim();
+          const lesson_date = $("lDate").value;
+          const minutes = Number($("lMinutes").value || 60);
+          const notes = $("lNotes").value || "";
+
+          if (!learner_code) return toast("Enter learner code.");
+          const r = await api("adminCreateLesson", { learner_code, lesson_date, minutes, notes });
+          toast(`Lesson created (${r.lesson_id}).`);
+        };
+
+        $("assignBtn").onclick = async () => {
+          const lesson_id = $("aLessonId").value.trim();
+          const tutor_code = $("aTutor").value.trim();
+          if (!lesson_id || !tutor_code) return toast("Enter lesson ID + tutor code.");
+          await api("adminAssignLesson", { lesson_id, tutor_code });
+          toast("Lesson assigned.");
+        };
+      },0);
+
+      return;
+    }
+
+    if (u.role === "learner"){
+      const dash = await api("getLearnerDashboard", {});
+      setHeader(`Learner Dashboard`, `Track lessons paid, done and remaining.`);
+      renderKPIs([
+        { label:"Lessons Paid For", value: dash.totals.lessonsBought, sub:`Learner: ${dash.learner_code}` },
+        { label:"Lessons Done", value: dash.totals.lessonsDone, sub:"Completed" },
+        { label:"Lessons Left", value: dash.totals.lessonsLeft, sub:"Remaining" },
+      ]);
+
+      $("sectionTitle").textContent = "Recent Lessons & Purchases";
+
+      const lessonRows = (dash.recentLessons || []).map(l => ([
+        `<span class="pill">${l.lesson_id}</span>`,
+        l.lesson_date,
+        l.tutor_code || "-",
+        (String(l.status).toUpperCase()==="DONE")
+          ? `<span class="pill green">DONE</span>`
+          : `<span class="pill orange">ASSIGNED</span>`,
+        (l.notes || "")
+      ]));
+
+      const purchaseRows = (dash.purchases || []).map(p => ([
+        `<span class="pill">${p.purchase_id}</span>`,
+        p.purchase_date,
+        p.lessons_bought,
+        money(p.amount_paid)
+      ]));
+
+      $("sectionBody").innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr;gap:12px">
+          <div>
+            <h2>Lessons</h2>
+            ${table(["ID","Date","Tutor","Status","Notes"], lessonRows)}
+          </div>
+          <div>
+            <h2>Purchases</h2>
+            ${table(["Purchase","Date","Lessons","Amount"], purchaseRows)}
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    if (u.role === "tutor"){
+      fillMonthSelect();
+      const month = $("monthSelect").value;
+      const dash = await api("getTutorDashboard", { month });
+
+      setHeader(`Tutor Dashboard`, `Mark lessons done + generate invoices (${dash.targetMonth}).`);
+
+      renderKPIs([
+        { label:"Assigned (Pending)", value: dash.totals.assignedCount, sub:`Tutor: ${dash.tutor_code}` },
+        { label:"Done (All Time)", value: dash.totals.doneCount, sub:"Your completed lessons" },
+        { label:"Invoice This Month", value: money(dash.invoice.earningsThisMonth), sub:`@ R${dash.invoice.ratePerLesson}/lesson` },
+      ]);
+
+      $("sectionTitle").textContent = "Assigned Lessons (You can mark DONE)";
+
+      const assignedRows = (dash.assignedLessons || []).map(l => ([
+        `<span class="pill">${l.lesson_id}</span>`,
+        l.lesson_date,
+        l.learner_code,
+        `${l.minutes || 60}`,
+        (l.notes || ""),
+        `<button class="btn" style="padding:8px 10px;border-radius:12px;font-size:12px" data-done="${l.lesson_id}">Mark DONE</button>`
+      ]));
+
+      const doneRows = (dash.doneLessonsThisMonth || []).map(l => ([
+        `<span class="pill">${l.lesson_id}</span>`,
+        l.lesson_date,
+        l.learner_code,
+        `<span class="pill green">DONE</span>`,
+        (l.notes || "")
+      ]));
+
+      const yearRows = (dash.yearSummary || []).map(r => ([
+        r.month,
+        r.lessonsDone,
+        money(r.earnings)
+      ]));
+
+      $("sectionBody").innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr;gap:12px">
+          <div>
+            ${table(["Lesson ID","Date","Learner","Minutes","Notes",""], assignedRows)}
+          </div>
+
+          <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+            <h3 style="margin:0 0 10px;font-size:14px">Invoice Summary (${dash.targetMonth})</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span class="pill orange">Lessons done: ${dash.invoice.lessonsDoneThisMonth}</span>
+              <span class="pill">Rate: R${dash.invoice.ratePerLesson}</span>
+              <span class="pill green">Total: ${money(dash.invoice.earningsThisMonth)}</span>
+            </div>
+            <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.72);line-height:1.35">
+              This is calculated from lessons you marked <b>DONE</b> in the selected month.
+            </div>
+          </div>
+
+          <div>
+            <h2>Done This Month</h2>
+            ${table(["Lesson ID","Date","Learner","Status","Notes"], doneRows)}
+          </div>
+
+          <div>
+            <h2>Year View</h2>
+            ${table(["Month","Lessons Done","Earnings"], yearRows)}
+          </div>
+        </div>
+      `;
+
+      // wire mark done buttons
+      setTimeout(()=>{
+        document.querySelectorAll("[data-done]").forEach(btn=>{
+          btn.addEventListener("click", async ()=>{
+            const lesson_id = btn.getAttribute("data-done");
+            btn.disabled = true;
+            btn.textContent = "Saving...";
+            try{
+              await api("tutorMarkLessonDone", { lesson_id });
+              toast("Marked DONE.");
+              loadRoleHome();
+            }catch(e){
+              toast(e.message || "Failed");
+              btn.disabled = false;
+              btn.textContent = "Mark DONE";
+            }
+          });
+        });
+      },0);
+
+      return;
+    }
+  }
+
+  /********************
+   * AUTH + INIT
+   ********************/
+  function saveSession(){
+    localStorage.setItem("buddyadmin_session", JSON.stringify(session));
+  }
+  function loadSession(){
+    try{
+      const s = JSON.parse(localStorage.getItem("buddyadmin_session") || "null");
+      if (s && s.session_code && s.user) session = s;
+    }catch(_){}
+  }
+
+  async function doLogin(code){
+    const r = await api("login", { code });
+    if (!r.user) throw new Error("Invalid code");
+
+    session.session_code = r.user.code;
+    session.user = r.user;
+    saveSession();
+
+    $("who").textContent = r.user.name || r.user.code;
+    $("whoMeta").textContent = `${r.user.role.toUpperCase()} • CODE: ${r.user.code}`;
+    setSessionUI(true);
+    await loadRoleHome();
+  }
+
+  function doLogout(){
+    session = { mode: session.mode, session_code:null, user:null };
+    localStorage.removeItem("buddyadmin_session");
+    setSessionUI(false);
+    setHeader("Welcome", "Login to manage lessons, purchases, and invoices.");
+  }
+
+  // Events
+  $("loginBtn").onclick = async () => {
+    try{
+      session.mode = "api";
+      $("envBadge").textContent = "LIVE";
+      const code = $("codeInput").value.trim();
+      if(!code) return toast("Enter your unique code.");
+      await doLogin(code);
+      toast("Logged in.");
+    }catch(e){
+      toast(e.message || "Login failed");
+    }
+  };
+
+  $("demoBtn").onclick = async () => {
+    try{
+      session.mode = "demo";
+      $("envBadge").textContent = "DEMO";
+      const code = ($("codeInput").value.trim() || "A1001");
+      await doLogin(code);
+      toast("Demo mode enabled.");
+    }catch(e){
+      toast(e.message || "Demo failed");
+    }
+  };
+
+  $("logoutBtn").onclick = () => {
+    doLogout();
+    toast("Logged out.");
+  };
+
+  $("monthSelect").addEventListener("change", () => loadRoleHome());
+
+  // Boot
+  (async function init(){
+    loadSession();
+    if (session.user){
+      $("who").textContent = session.user.name || session.user.code;
+      $("whoMeta").textContent = `${session.user.role.toUpperCase()} • CODE: ${session.user.code}`;
+      setSessionUI(true);
+      try{
+        await loadRoleHome();
+      }catch(e){
+        toast("Session expired. Please login again.");
+        doLogout();
+      }
+    } else {
+      setSessionUI(false);
+    }
+  })();
+</script>
+</body>
+</html>
