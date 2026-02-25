@@ -347,7 +347,7 @@
   /********************
    * CONFIG
    ********************/
-  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE"; // <-- replace
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxE4ZCpRxwaIVxg4on6xUaNLjEQPmSKUl-pOx7DN5ouBwa7KdbU4rH3-xWkz3TwEaLl7g/exec"; // <-- replace
 
   /********************
    * STATE
@@ -388,7 +388,7 @@
   }
 
   async function api(action, payload={}){
-    if (!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")) {
+    if (!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbxE4ZCpRxwaIVxg4on6xUaNLjEQPmSKUl-pOx7DN5ouBwa7KdbU4rH3-xWkz3TwEaLl7g/exec")) {
       throw new Error("Set SCRIPT_URL in the HTML (top of the script).");
     }
     const body = { action, ...payload };
