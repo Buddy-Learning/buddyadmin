@@ -332,7 +332,7 @@
   /********************
    * CONFIG
    ********************/
-  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE"; // <-- replace
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxIxeXRUZeAqiDvdu4sURAgIY9IX3_0O8hNgvHY-YENrHo7gZKsnO-CncoB4JayejohWQ/exec"; // <-- replace
 
   /********************
    * STATE
@@ -377,7 +377,7 @@
     if (session.mode === "demo") {
       return demoApi(action, payload);
     }
-    if (!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")) {
+    if (!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbxIxeXRUZeAqiDvdu4sURAgIY9IX3_0O8hNgvHY-YENrHo7gZKsnO-CncoB4JayejohWQ/exec")) {
       throw new Error("Set SCRIPT_URL in index.html");
     }
     const body = {
