@@ -6,15 +6,16 @@
   <title>BuddyAdmin</title>
   <style>
     :root{
-      --bg:#0b0b0f;
-      --card:#ffffff;
-      --muted:#6b7280;
+      --bg:#ffffff;
+      --panel:#ffffff;
+      --panel2:#fff7f0;
       --text:#0f172a;
+      --muted:#64748b;
       --orange:#ff7a00;
       --stroke: rgba(15,23,42,.12);
-      --shadow: 0 18px 50px rgba(0,0,0,.25);
+      --shadow: 0 18px 45px rgba(15,23,42,.10);
       --radius: 18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
 
@@ -23,10 +24,10 @@
       margin:0;
       font-family: var(--sans);
       background:
-        radial-gradient(1100px 700px at 15% 10%, rgba(255,122,0,.22), transparent 60%),
-        radial-gradient(900px 600px at 85% 20%, rgba(255,122,0,.16), transparent 60%),
+        radial-gradient(1100px 700px at 15% 0%, rgba(255,122,0,.18), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(255,122,0,.10), transparent 60%),
         var(--bg);
-      color:#fff;
+      color: var(--text);
       min-height:100vh;
       display:flex;
       align-items:stretch;
@@ -34,81 +35,97 @@
 
     .shell{
       width: min(1100px, 94vw);
-      margin: 28px auto;
+      margin: 26px auto;
       display:grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 340px 1fr;
       gap: 18px;
       align-items:start;
     }
 
+    .panel{
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
     .brand{
-      padding:18px 18px 8px;
+      padding:18px 18px 10px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
+      background: linear-gradient(180deg, rgba(255,122,0,.08), transparent 55%);
+      border-bottom: 1px solid rgba(15,23,42,.06);
     }
+
     .logo{
-      display:flex; align-items:center; gap:10px;
+      display:flex; align-items:center; gap:12px;
+      min-width:0;
     }
-    .mark{
-      width:42px; height:42px; border-radius:14px;
-      background: linear-gradient(135deg, rgba(255,122,0,1), rgba(255,122,0,.6));
-      box-shadow: 0 12px 30px rgba(255,122,0,.25);
-      position:relative;
+
+    .logoImg{
+      width:46px; height:46px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 1px solid rgba(15,23,42,.10);
+      box-shadow: 0 12px 26px rgba(255,122,0,.18);
+      background:#fff;
+      flex: 0 0 auto;
     }
-    .mark:after{
-      content:"";
-      position:absolute; inset:10px;
-      border-radius:10px;
-      border:2px solid rgba(0,0,0,.25);
-      background: rgba(255,255,255,.18);
-    }
+
     .brand h1{
       margin:0;
-      font-size:18px;
+      font-size:16px;
+      font-weight:900;
       letter-spacing:.2px;
+      line-height:1.15;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
+
+    .tagline{
+      margin-top:4px;
+      font-size:12px;
+      color: var(--muted);
+      line-height:1.2;
+    }
+
     .badge{
       font-family: var(--mono);
       font-size:12px;
       padding:6px 10px;
       border-radius:999px;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.92);
+      background: rgba(255,122,0,.10);
+      border:1px solid rgba(255,122,0,.22);
+      color: rgba(15,23,42,.85);
+      flex: 0 0 auto;
     }
 
-    .panel{
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      backdrop-filter: blur(10px);
-    }
-
-    .sidebar .inner{ padding: 10px 12px 14px; }
+    .sidebar .inner{ padding: 12px 12px 14px; }
     .sidebar .card{
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
+      background: #ffffff;
+      border:1px solid rgba(15,23,42,.10);
       border-radius: 16px;
       padding: 14px;
       margin: 10px 0;
+      box-shadow: 0 12px 24px rgba(15,23,42,.06);
     }
 
-    .label{ font-size:12px; color: rgba(255,255,255,.75); margin-bottom:6px; }
+    .label{ font-size:12px; color: var(--muted); margin-bottom:6px; }
     input, select, textarea{
       width:100%;
       padding:12px 12px;
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      color:#fff;
+      border: 1px solid rgba(15,23,42,.14);
+      background: #ffffff;
+      color: var(--text);
       outline:none;
       font-size:14px;
     }
-    input::placeholder, textarea::placeholder{ color: rgba(255,255,255,.45); }
+    input::placeholder, textarea::placeholder{ color: rgba(100,116,139,.75); }
     textarea{ min-height: 90px; resize: vertical; }
 
     .btn{
@@ -116,11 +133,11 @@
       cursor:pointer;
       border-radius: 14px;
       padding: 12px 14px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
-      color: #0b0b0f;
+      color: #ffffff;
       background: var(--orange);
-      box-shadow: 0 14px 30px rgba(255,122,0,.22);
+      box-shadow: 0 14px 28px rgba(255,122,0,.20);
       transition: transform .08s ease, filter .2s ease;
       width:100%;
     }
@@ -128,15 +145,14 @@
     .btn:active{ transform: translateY(1px); }
 
     .btn.secondary{
-      background: rgba(255,255,255,.10);
-      color:#fff;
-      border:1px solid rgba(255,255,255,.14);
+      background: #ffffff;
+      color: var(--text);
+      border:1px solid rgba(15,23,42,.14);
       box-shadow:none;
+      font-weight:800;
     }
 
-    .content{
-      padding: 14px;
-    }
+    .content{ padding: 14px; }
 
     .content .topbar{
       display:flex;
@@ -147,14 +163,17 @@
     }
 
     .userline{
-      display:flex; flex-direction:column; gap:2px;
+      display:flex; flex-direction:column; gap:3px;
+      min-width:0;
     }
     .userline .name{
-      font-size:16px; font-weight:800;
+      font-size:16px; font-weight:900;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
     .userline .meta{
-      font-size:12px; color: rgba(255,255,255,.72);
+      font-size:12px; color: var(--muted);
       font-family: var(--mono);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
     .grid{
@@ -165,8 +184,8 @@
     }
 
     .kpi{
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
+      background: var(--panel2);
+      border:1px solid rgba(255,122,0,.18);
       border-radius: 18px;
       padding: 14px;
       min-height: 92px;
@@ -174,19 +193,17 @@
       flex-direction:column;
       justify-content:space-between;
     }
-    .kpi .t{ font-size:12px; color: rgba(255,255,255,.72); }
-    .kpi .v{ font-size:28px; font-weight:900; letter-spacing:.3px; }
-    .kpi .s{ font-size:12px; color: rgba(255,255,255,.75); }
+    .kpi .t{ font-size:12px; color: rgba(15,23,42,.70); }
+    .kpi .v{ font-size:28px; font-weight:950; letter-spacing:.2px; }
+    .kpi .s{ font-size:12px; color: rgba(15,23,42,.70); }
 
-    .section{
-      padding: 0 14px 14px;
-    }
+    .section{ padding: 0 14px 14px; }
     .section h2{
       font-size:13px;
       letter-spacing:.12em;
       text-transform: uppercase;
       margin: 10px 0 10px;
-      color: rgba(255,255,255,.78);
+      color: rgba(15,23,42,.72);
     }
 
     .table{
@@ -194,22 +211,22 @@
       border-collapse: collapse;
       overflow:hidden;
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
+      border:1px solid rgba(15,23,42,.12);
+      background: #ffffff;
     }
     .table th, .table td{
       padding: 10px 10px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
+      border-bottom: 1px solid rgba(15,23,42,.10);
       font-size: 13px;
-      color: rgba(255,255,255,.92);
+      color: rgba(15,23,42,.92);
       vertical-align: top;
     }
     .table th{
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing:.1em;
-      color: rgba(255,255,255,.70);
-      background: rgba(255,255,255,.06);
+      color: rgba(15,23,42,.68);
+      background: rgba(255,122,0,.06);
     }
     .table tr:last-child td{ border-bottom:none; }
 
@@ -219,11 +236,11 @@
       border-radius:999px;
       font-size: 12px;
       font-family: var(--mono);
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
+      border:1px solid rgba(15,23,42,.14);
+      background: rgba(15,23,42,.04);
     }
-    .pill.orange{ background: rgba(255,122,0,.18); border-color: rgba(255,122,0,.25); }
-    .pill.green{ background: rgba(34,197,94,.16); border-color: rgba(34,197,94,.25); }
+    .pill.orange{ background: rgba(255,122,0,.12); border-color: rgba(255,122,0,.22); }
+    .pill.green{ background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.22); }
 
     .row{
       display:grid;
@@ -234,13 +251,12 @@
     .toast{
       position: fixed;
       right: 16px; bottom: 16px;
-      background: rgba(0,0,0,.75);
-      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(15,23,42,.92);
+      border: 1px solid rgba(255,255,255,.14);
       color:#fff;
       padding: 12px 14px;
       border-radius: 14px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
       max-width: min(420px, 92vw);
       display:none;
       z-index: 999;
@@ -259,13 +275,14 @@
     <div class="panel sidebar">
       <div class="brand">
         <div class="logo">
-          <div class="mark"></div>
-          <div>
-            <h1>BuddyAdmin</h1>
-            <div style="font-size:12px;color:rgba(255,255,255,.68)">Orange • White • Black</div>
+          <!-- Put your logo file in the SAME folder as this HTML and name it: buddy-learning-logo.png -->
+          <img class="logoImg" src="buddy-learning-logo.png" alt="Buddy Learning Logo" />
+          <div style="min-width:0">
+            <h1>Buddy Learning</h1>
+            <div class="tagline">Your Buddy in Education</div>
           </div>
         </div>
-        <div class="badge" id="envBadge">LIVE</div>
+        <div class="badge" id="envBadge">BUDDYADMIN</div>
       </div>
 
       <div class="inner">
@@ -274,17 +291,15 @@
           <input id="codeInput" placeholder="e.g. A1001 / T2001 / L3001" autocomplete="off" />
           <div style="height:10px"></div>
           <button class="btn" id="loginBtn">Login</button>
-          <div style="height:10px"></div>
-          <button class="btn secondary" id="demoBtn">Use Demo Mode</button>
-          <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
-            Demo mode runs without Apps Script (UI only).
+          <div style="margin-top:10px;font-size:12px;color:var(--muted);line-height:1.35">
+            Use your unique Admin, Tutor, or Learner code.
           </div>
         </div>
 
         <div class="card" id="sessionCard" style="display:none">
           <div class="label">Signed in as</div>
-          <div style="font-weight:900;font-size:15px" id="who"></div>
-          <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.75)" id="whoMeta"></div>
+          <div style="font-weight:950;font-size:15px" id="who"></div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--muted)" id="whoMeta"></div>
           <div style="height:10px"></div>
           <button class="btn secondary" id="logoutBtn">Logout</button>
         </div>
@@ -315,8 +330,8 @@
         <div id="sectionBody"></div>
       </div>
 
-      <div style="padding:14px;color:rgba(255,255,255,.72);line-height:1.45" id="emptyState">
-        <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:6px">Buddy Learning Lesson Tracking</div>
+      <div style="padding:14px;color:var(--muted);line-height:1.45" id="emptyState">
+        <div style="font-size:14px;font-weight:950;color:var(--text);margin-bottom:6px">Buddy Learning Lesson Tracking</div>
         <div>
           This portal lets <span class="pill orange">Admins</span> assign lessons and record purchases,
           <span class="pill orange">Learners</span> track lessons paid/done/left,
@@ -332,13 +347,12 @@
   /********************
    * CONFIG
    ********************/
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxIxeXRUZeAqiDvdu4sURAgIY9IX3_0O8hNgvHY-YENrHo7gZKsnO-CncoB4JayejohWQ/exec"; // <-- replace
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE"; // <-- replace
 
   /********************
    * STATE
    ********************/
   let session = {
-    mode: "api", // "api" or "demo"
     session_code: null,
     user: null,
   };
@@ -362,7 +376,7 @@
     const sel = $("monthSelect");
     sel.innerHTML = "";
     const now = new Date();
-    for(let i=0;i<14;i++){
+    for(let i=0;i<18;i++){
       const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
       const v = yyyymm(d);
       const opt = document.createElement("option");
@@ -374,16 +388,10 @@
   }
 
   async function api(action, payload={}){
-    if (session.mode === "demo") {
-      return demoApi(action, payload);
+    if (!SCRIPT_URL || SCRIPT_URL.includes("PASTE_YOUR")) {
+      throw new Error("Set SCRIPT_URL in the HTML (top of the script).");
     }
-    if (!SCRIPT_URL || SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbxIxeXRUZeAqiDvdu4sURAgIY9IX3_0O8hNgvHY-YENrHo7gZKsnO-CncoB4JayejohWQ/exec")) {
-      throw new Error("Set SCRIPT_URL in index.html");
-    }
-    const body = {
-      action,
-      ...payload
-    };
+    const body = { action, ...payload };
     if (action !== "login") body.session_code = session.session_code;
 
     const res = await fetch(SCRIPT_URL, {
@@ -397,79 +405,43 @@
   }
 
   /********************
-   * DEMO API (UI only)
+   * PAY CALC (Greedy: 10-pack then 4-pack then singles)
+   * Example:
+   * 6 -> 4-pack + 2 singles
+   * 16 -> 10-pack + 4-pack + 2 singles
    ********************/
-  function demoApi(action, payload){
-    const mock = {
-      userAdmin: { code:"A1001", role:"admin", name:"Admin User", linked_code:"" },
-      userTutor: { code:"T2001", role:"tutor", name:"K. Tutor", linked_code:"T2001" },
-      userLearner:{ code:"L3001", role:"learner", name:"S. Learner", linked_code:"L3001" },
-    };
+  function calcTutorInvoice(lessonsDoneThisMonth){
+    const n = Math.max(0, Number(lessonsDoneThisMonth) || 0);
 
-    if (action === "login"){
-      const c = (payload.code||"").toUpperCase().trim();
-      let user = null;
-      if (c.startsWith("A")) user = mock.userAdmin;
-      if (c.startsWith("T")) user = mock.userTutor;
-      if (c.startsWith("L")) user = mock.userLearner;
-      return Promise.resolve({ ok:true, user, error: user?null:"Invalid code" });
-    }
+    const packs10 = Math.floor(n / 10);
+    let rem = n % 10;
 
-    if (action === "getLearnerDashboard"){
-      return Promise.resolve({
-        ok:true,
-        learner_code:"L3001",
-        totals:{ lessonsBought: 10, lessonsDone: 4, lessonsLeft: 6 },
-        recentLessons:[
-          {lesson_id:"L1", lesson_date:"2026-02-20", learner_code:"L3001", tutor_code:"T2001", status:"DONE", minutes:60, notes:"Algebra"},
-          {lesson_id:"L2", lesson_date:"2026-02-23", learner_code:"L3001", tutor_code:"T2001", status:"ASSIGNED", minutes:60, notes:"Trigonometry"},
-        ],
-        purchases:[
-          {purchase_id:"P1", learner_code:"L3001", purchase_date:"2026-02-01", lessons_bought:10, amount_paid:1700}
-        ]
-      });
-    }
+    const packs4 = Math.floor(rem / 4);
+    rem = rem % 4;
 
-    if (action === "getTutorDashboard"){
-      const targetMonth = payload.month || "2026-02";
-      return Promise.resolve({
-        ok:true,
-        tutor_code:"T2001",
-        targetMonth,
-        totals:{ assignedCount: 3, doneCount: 8, leftCount: 3 },
-        invoice:{ ratePerLesson:175, lessonsDoneThisMonth: 6, earningsThisMonth: 1050 },
-        yearSummary:[
-          {month:"2026-01", lessonsDone:5, earnings:875},
-          {month:"2026-02", lessonsDone:6, earnings:1050},
-        ],
-        assignedLessons:[
-          {lesson_id:"L22", lesson_date:"2026-02-26", learner_code:"L3001", tutor_code:"T2001", status:"ASSIGNED", minutes:60, notes:"Geometry"},
-        ],
-        doneLessonsThisMonth:[
-          {lesson_id:"L12", lesson_date:"2026-02-05", learner_code:"L3001", tutor_code:"T2001", status:"DONE", minutes:60, notes:"Functions"},
-        ]
-      });
-    }
+    const singles = rem;
 
-    if (action === "adminSummary"){
-      return Promise.resolve({
-        ok:true,
-        totals:{ lessonsBought: 42, lessonsDone: 30, lessonsAssigned: 12 },
-        recentLessons:[],
-        recentPurchases:[]
-      });
-    }
+    const total = (packs10 * 1700) + (packs4 * 660) + (singles * 175);
 
-    if (action.startsWith("admin") || action.startsWith("tutor")){
-      return Promise.resolve({ ok:true, ...(payload||{}) });
-    }
+    const parts = [];
+    if (packs10) parts.push({ label: "10-session package", qty: packs10, amount: packs10 * 1700 });
+    if (packs4) parts.push({ label: "4-session package", qty: packs4, amount: packs4 * 660 });
+    if (singles) parts.push({ label: "Single sessions", qty: singles, amount: singles * 175 });
 
-    return Promise.resolve({ ok:false, error:"Demo: unsupported action" });
+    return { n, packs10, packs4, singles, total, parts };
   }
 
-  /********************
-   * UI RENDER
-   ********************/
+  function getInvoiceDates(targetYYYYMM){
+    const [yStr, mStr] = String(targetYYYYMM).split("-");
+    const y = Number(yStr);
+    const m = Number(mStr); // 1-12
+
+    const due = new Date(y, m-1, 28);        // 28th
+    const paid = new Date(y, m, 0);          // last day of month (day 0 of next month)
+    const fmt = (d) => d.toISOString().slice(0,10);
+    return { due: fmt(due), paid: fmt(paid) };
+  }
+
   function setSessionUI(signedIn){
     $("loginCard").style.display = signedIn ? "none" : "block";
     $("sessionCard").style.display = signedIn ? "block" : "none";
@@ -521,23 +493,26 @@
   function renderQuickActions(){
     const q = $("quickActions");
     const role = session.user.role;
+
     if (role === "learner"){
-      q.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
+      q.innerHTML = `<div style="font-size:12px;color:var(--muted);line-height:1.35">
         Learners can view progress only.
       </div>`;
       return;
     }
+
     if (role === "tutor"){
-      q.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
+      q.innerHTML = `<div style="font-size:12px;color:var(--muted);line-height:1.35">
         Tutors can mark their assigned lessons as <span class="pill green">DONE</span>.
       </div>`;
       return;
     }
+
     // admin
     q.innerHTML = `
       <button class="btn secondary" id="refreshBtn">Refresh Summary</button>
       <div style="height:8px"></div>
-      <div style="font-size:12px;color:rgba(255,255,255,.70);line-height:1.35">
+      <div style="font-size:12px;color:var(--muted);line-height:1.35">
         Admin can record purchases, create lessons and assign tutors.
       </div>
     `;
@@ -554,6 +529,7 @@
     if (u.role === "admin"){
       setHeader(`Admin Dashboard`, `Record purchases, create lessons, assign tutors.`);
       const sum = await api("adminSummary");
+
       renderKPIs([
         { label:"Lessons Bought (Total)", value: sum.totals.lessonsBought, sub:"All purchases" },
         { label:"Lessons Done (Total)", value: sum.totals.lessonsDone, sub:"Completed lessons" },
@@ -564,7 +540,7 @@
 
       $("sectionBody").innerHTML = `
         <div class="row" style="margin-bottom:12px">
-          <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+          <div class="panel" style="padding:12px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:18px;box-shadow:0 12px 24px rgba(15,23,42,.06)">
             <h3 style="margin:0 0 10px;font-size:14px">Add Purchase</h3>
             <div class="label">Learner Code</div>
             <input id="pLearner" placeholder="e.g. L3001" />
@@ -582,12 +558,12 @@
             <input id="pDate" type="date" />
             <div style="height:10px"></div>
             <button class="btn" id="addPurchaseBtn">Save Purchase</button>
-            <div style="margin-top:8px;font-size:12px;color:rgba(255,255,255,.70)">
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)">
               Pricing guide: 1 lesson R175 • 4 lessons R660 • 10 lessons R1700
             </div>
           </div>
 
-          <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+          <div class="panel" style="padding:12px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:18px;box-shadow:0 12px 24px rgba(15,23,42,.06)">
             <h3 style="margin:0 0 10px;font-size:14px">Create Lesson</h3>
             <div class="label">Learner Code</div>
             <input id="lLearner" placeholder="e.g. L3001" />
@@ -607,7 +583,7 @@
           </div>
         </div>
 
-        <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+        <div class="panel" style="padding:12px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:18px;box-shadow:0 12px 24px rgba(15,23,42,.06)">
           <h3 style="margin:0 0 10px;font-size:14px">Assign Lesson to Tutor</h3>
           <div class="row">
             <div>
@@ -624,22 +600,17 @@
         </div>
       `;
 
-      // wire admin buttons
       setTimeout(()=>{
         const pLessons = $("pLessons");
         const pAmount = $("pAmount");
         const pDate = $("pDate");
         const lDate = $("lDate");
 
-        // defaults
         const today = new Date();
         pDate.valueAsDate = today;
         lDate.valueAsDate = today;
 
-        pLessons.oninput = () => {
-          const s = suggestAmount(pLessons.value);
-          pAmount.value = s;
-        };
+        pLessons.oninput = () => { pAmount.value = suggestAmount(pLessons.value); };
 
         $("addPurchaseBtn").onclick = async () => {
           const learner_code = $("pLearner").value.trim();
@@ -722,14 +693,20 @@
     if (u.role === "tutor"){
       fillMonthSelect();
       const month = $("monthSelect").value;
+
+      // Backend already provides doneThisMonth list; we use that as the monthly reset.
       const dash = await api("getTutorDashboard", { month });
 
-      setHeader(`Tutor Dashboard`, `Mark lessons done + generate invoices (${dash.targetMonth}).`);
+      const doneCountThisMonth = (dash.doneLessonsThisMonth || []).length;
+      const invoice = calcTutorInvoice(doneCountThisMonth);
+      const dates = getInvoiceDates(dash.targetMonth);
+
+      setHeader(`Tutor Dashboard`, `Invoice period: ${dash.targetMonth} • Due: ${dates.due} • Paid: ${dates.paid}`);
 
       renderKPIs([
         { label:"Assigned (Pending)", value: dash.totals.assignedCount, sub:`Tutor: ${dash.tutor_code}` },
-        { label:"Done (All Time)", value: dash.totals.doneCount, sub:"Your completed lessons" },
-        { label:"Invoice This Month", value: money(dash.invoice.earningsThisMonth), sub:`@ R${dash.invoice.ratePerLesson}/lesson` },
+        { label:"Lessons Done (This Month)", value: doneCountThisMonth, sub:"Resets monthly" },
+        { label:"Invoice Total (This Month)", value: money(invoice.total), sub:"10-pack → 4-pack → singles" },
       ]);
 
       $("sectionTitle").textContent = "Assigned Lessons (You can mark DONE)";
@@ -740,7 +717,7 @@
         l.learner_code,
         `${l.minutes || 60}`,
         (l.notes || ""),
-        `<button class="btn" style="padding:8px 10px;border-radius:12px;font-size:12px" data-done="${l.lesson_id}">Mark DONE</button>`
+        `<button class="btn" style="padding:8px 10px;border-radius:12px;font-size:12px;width:auto" data-done="${l.lesson_id}">Mark DONE</button>`
       ]));
 
       const doneRows = (dash.doneLessonsThisMonth || []).map(l => ([
@@ -757,21 +734,34 @@
         money(r.earnings)
       ]));
 
+      const breakdownRows = (invoice.parts.length ? invoice.parts : [{label:"No lessons completed", qty:0, amount:0}]).map(p => ([
+        p.label,
+        p.qty,
+        money(p.amount)
+      ]));
+
       $("sectionBody").innerHTML = `
         <div style="display:grid;grid-template-columns:1fr;gap:12px">
           <div>
             ${table(["Lesson ID","Date","Learner","Minutes","Notes",""], assignedRows)}
           </div>
 
-          <div class="panel" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:18px">
+          <div class="panel" style="padding:12px;background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:18px;box-shadow:0 12px 24px rgba(15,23,42,.06)">
             <h3 style="margin:0 0 10px;font-size:14px">Invoice Summary (${dash.targetMonth})</h3>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <span class="pill orange">Lessons done: ${dash.invoice.lessonsDoneThisMonth}</span>
-              <span class="pill">Rate: R${dash.invoice.ratePerLesson}</span>
-              <span class="pill green">Total: ${money(dash.invoice.earningsThisMonth)}</span>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+              <span class="pill orange">Lessons done: ${invoice.n}</span>
+              <span class="pill">Invoice due: ${dates.due}</span>
+              <span class="pill green">Pay date: ${dates.paid}</span>
+              <span class="pill green">Total: ${money(invoice.total)}</span>
             </div>
-            <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.72);line-height:1.35">
-              This is calculated from lessons you marked <b>DONE</b> in the selected month.
+
+            <div style="margin: 10px 0 6px; font-size:12px; color: rgba(15,23,42,.72); letter-spacing:.12em; text-transform:uppercase;">
+              Package breakdown
+            </div>
+            ${table(["Type","Qty","Amount"], breakdownRows)}
+
+            <div style="margin-top:10px;font-size:12px;color:rgba(15,23,42,.70);line-height:1.35">
+              Payment logic used: <b>10-session package</b> first, then <b>4-session package</b>, then <b>single sessions</b>.
             </div>
           </div>
 
@@ -787,7 +777,6 @@
         </div>
       `;
 
-      // wire mark done buttons
       setTimeout(()=>{
         document.querySelectorAll("[data-done]").forEach(btn=>{
           btn.addEventListener("click", async ()=>{
@@ -839,35 +828,20 @@
   }
 
   function doLogout(){
-    session = { mode: session.mode, session_code:null, user:null };
+    session = { session_code:null, user:null };
     localStorage.removeItem("buddyadmin_session");
     setSessionUI(false);
     setHeader("Welcome", "Login to manage lessons, purchases, and invoices.");
   }
 
-  // Events
   $("loginBtn").onclick = async () => {
     try{
-      session.mode = "api";
-      $("envBadge").textContent = "LIVE";
       const code = $("codeInput").value.trim();
       if(!code) return toast("Enter your unique code.");
       await doLogin(code);
       toast("Logged in.");
     }catch(e){
       toast(e.message || "Login failed");
-    }
-  };
-
-  $("demoBtn").onclick = async () => {
-    try{
-      session.mode = "demo";
-      $("envBadge").textContent = "DEMO";
-      const code = ($("codeInput").value.trim() || "A1001");
-      await doLogin(code);
-      toast("Demo mode enabled.");
-    }catch(e){
-      toast(e.message || "Demo failed");
     }
   };
 
@@ -878,7 +852,6 @@
 
   $("monthSelect").addEventListener("change", () => loadRoleHome());
 
-  // Boot
   (async function init(){
     loadSession();
     if (session.user){
